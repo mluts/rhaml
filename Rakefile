@@ -4,7 +4,7 @@ require 'rake/testtask'
 RAGEL = 'ragel -R'
 CLEAN << FileList['lib/rparser.rb']
 
-file 'lib/rparser.rb' => %w(lib/rparser.rl lib/rparser_common.rl) do |t|
+file 'lib/rhaml/parser.rb' => %w(lib/rhaml/parser.rl lib/rhaml/parser_common.rl) do |t|
   sh "#{RAGEL} -o #{t.name} #{t.prerequisites.first}"
 end
 
@@ -14,4 +14,6 @@ Rake::TestTask.new do |t|
   t.verbose = true
 end
 
-task default: %w(lib/rparser.rb test)
+task compile: %w(lib/rhaml/parser.rb)
+
+task default: [:compile, :test]

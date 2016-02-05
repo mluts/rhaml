@@ -1,5 +1,5 @@
 %%{
-  machine chaml_common;
+  machine rhaml_common;
 
   action return { fret; }
 
