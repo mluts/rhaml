@@ -32,6 +32,10 @@ module RHaml
       @indentation += 1
     end
 
+    def newline
+      @indentation = 0
+    end
+
     def new_tag
       if @indentation == 0
         tag = Tag.new
@@ -45,7 +49,6 @@ module RHaml
           @stack.slice!(@indentation..-1)
           @stack[@indentation] = tag
           parent.tags << tag
-          @indentation = 0
         end
       end
       @tag

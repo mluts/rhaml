@@ -22,6 +22,7 @@ module RHaml
         action indent { document.indent }
         action new_tag { document.new_tag }
         action tag_name { document.append_to_tag_name(data[fpc]) }
+        action newline { document.newline }
 
         action new_attribute {
           #tag.attributes << Attribute.new
@@ -53,14 +54,12 @@ module RHaml
         write exec;
       }%%
 
-      if cs != rhaml_parser_first_final
-        raise ParseError.new("ParseError on #{linecol(text, p)}")
+      if cs == rhaml_parser_error
+        coords = linecol(text, p)
+        raise ParseError.new("ParseError at #{coords.join(':')}\n#{text.lines[coords[0]-1..coords[0]+1].inspect}")
       end
 
       document.compile
-    rescue => ex
-      puts "#{ex.class}: #{ex.message}"
-      puts "Position: #{linecol(text, p).join(":")}"
     end
 
     def linecol(text, p)
