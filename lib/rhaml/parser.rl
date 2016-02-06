@@ -16,7 +16,7 @@ module RHaml
       top = 0
       stack = []
 
-      document = Document.new
+      document = Document.new(@options)
 
       %%{
         machine rhaml_parser;
@@ -25,6 +25,8 @@ module RHaml
         action indent_space { document.indent_space }
         action new_tag { document.new_tag }
         action tag_name { document.append_to_tag_name(data[fpc]) }
+        action new_header { document.header }
+        action header_name { document.header_char(data[fpc]) }
         action newline { document.newline }
 
         action new_attribute {

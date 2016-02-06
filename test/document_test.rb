@@ -10,7 +10,7 @@ class DocumentTest < MiniTest::Test
     obj
   end
 
-  def test_compile1
+  def test_compile_one_tag
     chain(@doc,
           :new_tag,
           [:append_to_tag_name, 'a'])
@@ -18,7 +18,7 @@ class DocumentTest < MiniTest::Test
                  [:multi, @doc.tags.first.compile])
   end
 
-  def test_compile2
+  def test_compile_nested_tags
     chain(@doc,
          :new_tag,
          [:append_to_tag_name, 'a'],
@@ -37,5 +37,13 @@ class DocumentTest < MiniTest::Test
                 [:multi,
                   @doc.tags[0].compile,
                   @doc.tags[1].compile])
+  end
+
+  def test_compile_header
+    chain(@doc,
+         :header,
+         *"XML".chars.map { |c| [:header_char, c] })
+    assert_equal(@doc.compile,
+                [:multi, [:html, :doctype, 'XML']])
   end
 end

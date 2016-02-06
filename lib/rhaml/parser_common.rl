@@ -38,9 +38,11 @@
       "("@call_attributes
     )?;
 
-  element = tag;
+  header = "!!!">new_header ((space -- [\n])+ [^\n]+$header_name)?;
 
-  haml = (indentation* element newlines )* ;
+  element = header | tag;
+
+  haml = (indentation* element :>> newlines )* ;
 
   main := haml;
 }%%

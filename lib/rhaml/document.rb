@@ -1,16 +1,18 @@
-require 'rhaml/document/tag'
 require 'rhaml/document/indentation'
+require 'rhaml/document/tag'
+require 'rhaml/document/header'
 
 module RHaml
   class Document
     attr_reader :tags
 
-    def initialize
+    def initialize(options = {})
       @tags = []
       @doctype = nil
       @line = 0
       @stack = []
       @indentation = Indentation.new
+      @options = options
     end
 
     def indent_tab
@@ -32,7 +34,7 @@ module RHaml
         @stack = [tag]
       else
         if (parent = @stack[@indentation.index-1]).nil?
-          raise ParseError.new("Wrong indentation on line #{@indentation.line} (#{@indentation.index})!")
+          raise SyntaxError.new("Wrong indentation on line #{@indentation.line} (#{@indentation.index})!")
         else
           tag = Tag.new
           @stack.slice!(@indentation.index..-1)
@@ -46,6 +48,22 @@ module RHaml
     def append_to_tag_name(char)
       raise "No tag for this indentation!" if @stack[@indentation.index].nil?
       @stack.last.name << char
+    end
+
+    def header
+      if @indentation.index > 0
+        raise SyntaxError.new("Indentation for header is prohibited")
+      else
+        @tags << Header.new(@options.fetch(:format, :xhtml))
+      end
+    end
+
+    def header_char(char)
+      if @tags.last.is_a?(Header)
+        @tags.last.name << char
+      else
+        raise RHaml::Error.new("Expected to have header, but had #{@tags.last.inspect}")
+      end
     end
 
     def compile

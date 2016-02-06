@@ -2,5 +2,6 @@ require 'temple'
 
 module RHaml
   Error = Class.new(StandardError)
-  require 'rhaml/renderer'
+  SyntaxError = Class.new(Error)
+  require 'rhaml/engine'
 end
