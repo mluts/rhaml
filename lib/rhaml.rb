@@ -1,2 +1,6 @@
 require 'temple'
-require 'rhaml/engine'
+
+module RHaml
+  Error = Class.new(StandardError)
+  require 'rhaml/renderer'
+end

@@ -1,17 +1,19 @@
 require 'test_helper'
 
-class EngineTest < MiniTest::Test
+class RendererTest < MiniTest::Test
   def setup
-    @engine = RHaml::Engine.new
+    @engine = RHaml::Renderer.new
   end
 
   def render(template)
-    eval(RHaml::Engine.new.call(template))
+    eval(@engine.call(template))
   end
 
   EXAMPLES = {
-    "%a\n  %b\n    %c" => "<a><b><c></c></b></a>",
-    "%a\n  \n%b\n  %c" => "<a></a><b><c></c></b>"
+    "%a\n  %b\n    %c"          => "<a><b><c></c></b></a>",
+    "%a   \r\t  \n  %b\n    %c" => "<a><b><c></c></b></a>",
+    "%a\n  \n%b\n  %c"          => "<a></a><b><c></c></b>",
+    "%a\n  %b\n  %c"            => "<a><b></b><c></c></a>"
   }
 
   EXAMPLES.each do |code, result|

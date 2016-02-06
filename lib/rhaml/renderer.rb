@@ -3,7 +3,7 @@ require 'rhaml/parser'
 module RHaml
   ParseError = Class.new(StandardError)
 
-  class Engine < ::Temple::Engine
+  class Renderer < ::Temple::Engine
     use RHaml::Parser
 
     html :Fast

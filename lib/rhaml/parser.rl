@@ -2,6 +2,8 @@ require 'rhaml/document'
 
 module RHaml
   class Parser
+    Error = Class.new(RHaml::Error)
+
     def initialize(options = {})
       @options = options
     end
@@ -19,7 +21,8 @@ module RHaml
       %%{
         machine rhaml_parser;
 
-        action indent { document.indent }
+        action indent_tab { document.indent_tab }
+        action indent_space { document.indent_space }
         action new_tag { document.new_tag }
         action tag_name { document.append_to_tag_name(data[fpc]) }
         action newline { document.newline }
@@ -55,7 +58,7 @@ module RHaml
       }%%
 
       if cs == rhaml_parser_error
-        raise ParseError.new(parse_error(text, p))
+        raise self.class::Error.new(parse_error(text, p))
       end
 
       document.compile

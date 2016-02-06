@@ -5,9 +5,9 @@
 
   action call_attributes { fcall attributes; }
 
-  indentation = "  "@indent;
+  indentation = (' '$indent_space | [\t]$indent_tab);
 
-  newlines = ((space* -- [\n]) [\n]$newline)+ ;
+  newlines = ((space* -- [\n]) [\n]$newline (space* -- ([\n] | indentation)))+ ;
 
   var = (alpha | "_")+;
 
