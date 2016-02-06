@@ -2,6 +2,7 @@ require 'rhaml/document/indentation'
 require 'rhaml/document/header'
 require 'rhaml/document/tag'
 require 'rhaml/document/attribute'
+require 'rhaml/document/text'
 
 module RHaml
   class Document
@@ -40,7 +41,7 @@ module RHaml
           tag = Tag.new
           @stack.slice!(@indentation.index..-1)
           @stack[@indentation.index] = tag
-          parent.tags << tag
+          parent.elements << tag
         end
       end
       tag
@@ -97,6 +98,33 @@ module RHaml
 
     def auto_close
       @stack.last.auto_close
+    end
+
+    def new_text
+      tag = @stack[@indentation.index-1]
+
+      unless tag.is_a?(Tag)
+        raise SyntaxError.new("Wrong indentation for text on line #{@indentation.line} - #{@indentation.count} chars")
+      end
+      text = tag.elements.last
+      if !text.is_a?(Text)
+        text = Text.new
+        tag.elements << text
+      end
+      @stack.slice!(@indentation.index..-1)
+      @stack[@indentation.index] = text
+    end
+
+    def text_char(char)
+      @stack.last.content << char
+    end
+
+    def inline_text_char(char)
+      unless @stack.last.is_a?(Tag)
+        raise RHaml::Error.new("Can't insert inline text to #{@stack.last.inspect}")
+      end
+
+      @stack.last.inline_text << char
     end
   end
 end

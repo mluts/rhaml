@@ -34,6 +34,9 @@ module RHaml
         action start_id { document.start_id }
         action start_class { document.start_class }
         action auto_close { document.auto_close }
+        action new_text { document.new_text }
+        action text_name { document.text_char(data[fpc]) }
+        action tag_inline_text { document.inline_text_char(data[fpc]) }
 
         action new_attribute {
           #tag.attributes << Attribute.new

@@ -1,4 +1,5 @@
 require 'rhaml/parser'
+require 'rhaml/html/pretty'
 
 module RHaml
   ParseError = Class.new(StandardError)
@@ -6,7 +7,7 @@ module RHaml
   class Renderer < ::Temple::Engine
     use RHaml::Parser
 
-    html :Pretty
+    use RHaml::HTML::Pretty
 
     filter :MultiFlattener
     filter :StaticMerger

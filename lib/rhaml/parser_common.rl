@@ -7,7 +7,7 @@
 
   indentation = (' '$indent_space | [\t]$indent_tab);
 
-  newlines = ((space* -- [\n]) [\n]$newline (space* -- ([\n] | indentation)))+ ;
+  newlines = ([\n]$newline (space* -- ([\n] | indentation)))+ ;
 
   var = (alpha | "_")+;
 
@@ -32,11 +32,13 @@
 
   attributes := html_attributes ")"@return;
 
-  tag_name = name$tag_name;
+  tag_name = name$tag_name ;
 
-  tag_class = name$tag_class ;
+  tag_class = (name_chars | "-" | ":" )+ $tag_class ;
 
   tag_id = name$tag_id;
+
+  tag_inline_text = (space - [\n]) ((any - [\n]) (any - [\n])*) $tag_inline_text ;
 
   tag =
     "%">new_tag tag_name
@@ -44,7 +46,10 @@
     ("/"$auto_close)?
     (
       "("@call_attributes
-    )?;
+    )?
+
+    tag_inline_text?
+    ;
 
   header =
     "!!!">new_header ((space -- [\n])+ [^\n]+$header_name)?;
@@ -53,9 +58,11 @@
 
   class_div = ".">new_div tag_class;
 
-  div = id_div | class_div ;
+  div = (id_div | class_div) tag_inline_text? ;
 
-  element = header | div | tag;
+  text = (any - (indentation | "#" | "." | "%" | "!"))$text_name >new_text (any$text_name)*;
+
+  element = header | div | tag | text ;
 
   haml = indentation* element :>> (newlines indentation* element)* ;
 

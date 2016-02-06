@@ -56,4 +56,35 @@ class DocumentTest < MiniTest::Test
     assert_equal(@doc.compile,
                 [:multi, [:html, :tag, "div", [:html, :attrs, [:html, :attr, 'id', [:static, 'abc']]], [:multi]]])
   end
+
+  def test_text
+    chain(@doc,
+          :div,
+          :newline,
+          :indent_space,
+          :new_text,
+          [:text_char, "hello"])
+    assert_equal([:multi,
+                 [:html,
+                  :tag,
+                  "div",
+                  [:multi],
+                  [:multi, [:static, "hello"]]]],
+                @doc.compile)
+  end
+
+  def test_inline_text
+    chain(@doc,
+         :div,
+         [:inline_text_char, "hello"])
+    assert_equal(
+      [:multi,
+       [:html,
+        :tag,
+        :inline,
+        "div",
+        [:multi],
+        [:multi, [:static, "hello"]]]
+      ], @doc.compile)
+  end
 end

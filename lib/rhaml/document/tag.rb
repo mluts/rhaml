@@ -1,22 +1,33 @@
 module RHaml
   class Document
     class Tag
-      attr_reader :name, :tags, :id, :klass
+      attr_reader :name, :elements, :id, :klass, :inline_text
 
       def initialize(name = "")
         @name = name
-        @tags = []
+        @elements = []
         @id = ""
         @klass = ""
         @attributes = []
         @auto_close = false
+        @inline_text = ""
       end
 
       def compile
-        children_tags = tags.map(&:compile)
+        children_elements =
+          if @inline_text.empty?
+            elements.map(&:compile)
+          else
+            [[:static, @inline_text]]
+          end
+
         attributes = compile_attributes
 
-        exp = [:html, :tag, @name]
+        exp = [:html, :tag]
+
+        exp << :inline if !@inline_text.empty?
+
+        exp << @name
 
         if attributes.any?
           exp << [:html, :attrs, *attributes]
@@ -25,7 +36,7 @@ module RHaml
         end
 
         if !@auto_close
-          exp << [:multi, *children_tags]
+          exp << [:multi, *children_elements]
         end
 
         exp

@@ -18,9 +18,9 @@ class TagTest < Minitest::Test
   end
 
   def test_tags
-    @tag.tags << new_tag("a")
-    @tag.tags << new_tag("b")
-    assert_equal(@tag.tags.map(&:name), %w(a b))
+    @tag.elements << new_tag("a")
+    @tag.elements << new_tag("b")
+    assert_equal(@tag.elements.map(&:name), %w(a b))
   end
 
   def test_compile_one
@@ -32,7 +32,7 @@ class TagTest < Minitest::Test
   end
 
   def test_compile_with_one_nested
-    @tag.tags << new_tag('a')
+    @tag.elements << new_tag('a')
     assert_equal(@tag.compile,
                  [:html,
                   :tag,
@@ -48,8 +48,8 @@ class TagTest < Minitest::Test
   end
 
   def test_compile_with_two_nested
-    @tag.tags << new_tag('a')
-    @tag.tags << new_tag('b')
+    @tag.elements << new_tag('a')
+    @tag.elements << new_tag('b')
     assert_equal(@tag.compile,
                   [:html,
                    :tag,
