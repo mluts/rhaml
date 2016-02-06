@@ -14,7 +14,9 @@
   str =
     ("'" ([^'] | "\\'")* "'") | ('"' ([^"] | '\\"')* '"');
 
-  name = alnum (("-" alnum) | alnum)* ;
+  name_chars = alnum | "_" ;
+
+  name = name_chars ((("-" | ":") name_chars) | name_chars)* ;
 
   attribute_name = name$attribute_name >new_attribute;
 
