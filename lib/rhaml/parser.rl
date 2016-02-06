@@ -55,22 +55,40 @@ module RHaml
       }%%
 
       if cs == rhaml_parser_error
-        coords = linecol(text, p)
-        raise ParseError.new("ParseError at #{coords.join(':')}\n#{text.lines[coords[0]-1..coords[0]+1].inspect}")
+        raise ParseError.new(parse_error(text, p))
       end
 
       document.compile
     end
 
+    def parse_error(text, p)
+      coords = linecol(text, p)
+      buf = "At #{coords.join(':')}:#{p}\n"
+
+      lines = text.lines
+
+      start, finish = coords[0]-3, coords[0]+3
+      start = 0 if start < 0
+
+      (start..finish).each do |line|
+        l = lines[line]
+        unless l.nil?
+          buf << "#{line}: #{l.inspect}\n"
+        end
+      end
+      buf
+    end
+
     def linecol(text, p)
       line = 0
       col = 0
-      text.chars.each do |c|
-        if c == "\n"
+      text.chars.each_with_index do |c, i|
+        if i == p
+          col += 1
+          break
+        elsif c == "\n"
           line += 1
           col = 0
-        elsif c == text[p]
-          break
         else
           col += 1
         end

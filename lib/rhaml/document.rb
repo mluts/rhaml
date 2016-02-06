@@ -25,6 +25,7 @@ module RHaml
       @tags = []
       @doctype = nil
       @indentation = 0
+      @line = 0
       @stack = []
     end
 
@@ -33,6 +34,7 @@ module RHaml
     end
 
     def newline
+      @line += 1
       @indentation = 0
     end
 
@@ -43,7 +45,7 @@ module RHaml
         @stack = [tag]
       else
         if (parent = @stack[@indentation-1]).nil?
-          raise ParseError.new("Wrong indentation!")
+          raise ParseError.new("Wrong indentation on line #{@line} (#{@indentation})!")
         else
           tag = Tag.new
           @stack.slice!(@indentation..-1)

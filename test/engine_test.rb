@@ -6,21 +6,17 @@ class EngineTest < MiniTest::Test
   end
 
   def render(template)
-    RHaml::Engine.new.call(template)
+    eval(RHaml::Engine.new.call(template))
   end
 
-  TEMPLATE1 = <<EOF
-%a
-  %b
-    %c
-%d
-  %e
-    %f
-EOF
+  EXAMPLES = {
+    "%a\n  %b\n    %c" => "<a><b><c></c></b></a>",
+    "%a\n  \n%b\n  %c" => "<a></a><b><c></c></b>"
+  }
 
-  RESULT1 = "<a><b><c></c></b></a><d><e><f></f></e></d>"
-
-  def test_basic_haml
-    assert_equal(eval(render(TEMPLATE1)), RESULT1.strip)
+  EXAMPLES.each do |code, result|
+    define_method("test_example: #{code.inspect}") do
+      assert_equal(render(code), result)
+    end
   end
 end

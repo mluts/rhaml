@@ -7,7 +7,7 @@
 
   indentation = "  "@indent;
 
-  newlines = ((space* -- [\n]) [\n]@newline) ;
+  newlines = ((space* -- [\n]) [\n]$newline)+ ;
 
   var = (alpha | "_")+;
 

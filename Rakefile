@@ -2,7 +2,7 @@ require 'rake/clean'
 require 'rake/testtask'
 
 RAGEL = 'ragel -R'
-CLEAN << FileList['lib/rparser.rb']
+CLEAN << FileList['lib/rhaml/parser.rb']
 
 file 'lib/rhaml/parser.rb' => %w(lib/rhaml/parser.rl lib/rhaml/parser_common.rl) do |t|
   sh "#{RAGEL} -o #{t.name} #{t.prerequisites.first}"
