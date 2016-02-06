@@ -54,7 +54,7 @@
 
   element = header | div | tag;
 
-  haml = indentation* element :> (newlines indentation* element)* ;
+  haml = indentation* element :>> (newlines indentation* element)* ;
 
   main := haml;
 }%%
