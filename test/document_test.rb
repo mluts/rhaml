@@ -46,4 +46,14 @@ class DocumentTest < MiniTest::Test
     assert_equal(@doc.compile,
                 [:multi, [:html, :doctype, 'XML']])
   end
+
+  def test_div_id
+    chain(@doc,
+          :div,
+          [:id_char, "a"],
+          [:id_char, "b"],
+          [:id_char, "c"])
+    assert_equal(@doc.compile,
+                [:multi, [:html, :tag, "div", [:html, :attrs, [:html, :attr, 'id', [:static, 'abc']]], [:multi]]])
+  end
 end

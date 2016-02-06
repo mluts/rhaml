@@ -14,7 +14,7 @@
   str =
     ("'" ([^'] | "\\'")* "'") | ('"' ([^"] | '\\"')* '"');
 
-  name = alpha (("-" alpha) | alpha)* ;
+  name = alnum (("-" alnum) | alnum)* ;
 
   attribute_name = name$attribute_name >new_attribute;
 
@@ -32,17 +32,29 @@
 
   tag_name = name$tag_name;
 
+  tag_class = name$tag_class ;
+
+  tag_id = name$tag_id;
+
   tag =
     "%">new_tag tag_name
+    (("#">start_id tag_id) | (".">start_class tag_class))*
     (
       "("@call_attributes
     )?;
 
-  header = "!!!">new_header ((space -- [\n])+ [^\n]+$header_name)?;
+  header =
+    "!!!">new_header ((space -- [\n])+ [^\n]+$header_name)?;
 
-  element = header | tag;
+  id_div = "#">new_div tag_id;
 
-  haml = (indentation* element :>> newlines )* ;
+  class_div = ".">new_div tag_class;
+
+  div = id_div | class_div ;
+
+  element = header | div | tag;
+
+  haml = indentation* element :> (newlines indentation* element)* ;
 
   main := haml;
 }%%

@@ -6,7 +6,7 @@ module RHaml
   class Renderer < ::Temple::Engine
     use RHaml::Parser
 
-    html :Fast
+    html :Pretty
 
     filter :MultiFlattener
     filter :StaticMerger

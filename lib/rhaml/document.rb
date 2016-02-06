@@ -1,6 +1,7 @@
 require 'rhaml/document/indentation'
-require 'rhaml/document/tag'
 require 'rhaml/document/header'
+require 'rhaml/document/tag'
+require 'rhaml/document/attribute'
 
 module RHaml
   class Document
@@ -42,7 +43,7 @@ module RHaml
           parent.tags << tag
         end
       end
-      @tag
+      tag
     end
 
     def append_to_tag_name(char)
@@ -68,6 +69,30 @@ module RHaml
 
     def compile
       [:multi, *@tags.map(&:compile)]
+    end
+
+    def div
+      tag = new_tag
+      tag.name << "div"
+      tag
+    end
+
+    def id_char(char)
+      @stack.last.id << char
+    end
+
+    def class_char(char)
+      @stack.last.klass << char
+    end
+
+    def start_id
+      @stack.last.id.clear
+    end
+
+    def start_class
+      if !@stack.last.klass.empty?
+        @stack.last.klass << " "
+      end
     end
   end
 end

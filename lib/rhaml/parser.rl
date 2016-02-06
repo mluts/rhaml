@@ -28,6 +28,11 @@ module RHaml
         action new_header { document.header }
         action header_name { document.header_char(data[fpc]) }
         action newline { document.newline }
+        action new_div { document.div }
+        action tag_id { document.id_char(data[fpc]) }
+        action tag_class { document.class_char(data[fpc]) }
+        action start_id { document.start_id }
+        action start_class { document.start_class }
 
         action new_attribute {
           #tag.attributes << Attribute.new
