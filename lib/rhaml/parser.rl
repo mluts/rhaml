@@ -33,6 +33,7 @@ module RHaml
         action tag_class { document.class_char(data[fpc]) }
         action start_id { document.start_id }
         action start_class { document.start_class }
+        action auto_close { document.auto_close }
 
         action new_attribute {
           #tag.attributes << Attribute.new

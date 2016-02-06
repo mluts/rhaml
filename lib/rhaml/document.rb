@@ -94,5 +94,9 @@ module RHaml
         @stack.last.klass << " "
       end
     end
+
+    def auto_close
+      @stack.last.auto_close
+    end
   end
 end

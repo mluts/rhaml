@@ -39,6 +39,7 @@
   tag =
     "%">new_tag tag_name
     (("#">start_id tag_id) | (".">start_class tag_class))*
+    ("/"$auto_close)?
     (
       "("@call_attributes
     )?;
