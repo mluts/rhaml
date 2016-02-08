@@ -37,30 +37,15 @@ module RHaml
         action new_text { document.new_text }
         action text_name { document.text_char(data[fpc]) }
         action tag_inline_text { document.inline_text_char(data[fpc]) }
+        action new_attribute { document.new_attribute }
+        action attribute_name { document.attribute_name(data[fpc]) }
 
-        action new_attribute {
-          #tag.attributes << Attribute.new
-        }
+        action new_attribute_var { document.new_attribute_var }
 
-        action attribute_name {
-          #tag.attributes.last.name << data[fpc]
-        }
+        action attribute_var_name { document.attribute_var_name(data[fpc]) }
 
-        action new_attribute_var {
-          #tag.attributes.last.value = Variable.new
-        }
-
-        action attribute_var_name {
-          #tag.attributes.last.value.name << data[fpc]
-        }
-
-        action new_attribute_str {
-          #tag.attributes.last.value = ""
-        }
-
-        action attribute_str_char {
-          #tag.attributes.last.value << data[fpc]
-        }
+        action new_attribute_str { document.new_attribute_str }
+        action attribute_str_char { document.attribute_str_char(data[fpc])}
 
         include rhaml_common "parser_common.rl";
         write data;

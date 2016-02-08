@@ -10,7 +10,7 @@ module RHaml
 
     def default_options
       {
-        format: :xhtml,
+        format: :html,
         attr_quote: "'",
         indent_tags: %w(article aside audio base body datalist dd div dl dt
                         fieldset figure footer form head h1 h2 h3 h4 h5 h6
@@ -21,7 +21,15 @@ module RHaml
     end
 
     def render(object = Object.new, locals = {})
-      eval(@renderer.call(@template), object.instance_eval{binding})
+      scope = object.instance_eval{binding}
+      set_locals(locals, scope, object)
+      eval(@renderer.call(@template), scope)
+    end
+
+    def set_locals(locals, scope, scope_object)
+      scope_object.instance_variable_set :@_rhaml_locals, locals
+      set_locals = locals.keys.map { |k| "#{k} = @_rhaml_locals[#{k.inspect}]" }.join("\n")
+      eval(set_locals, scope)
     end
   end
 end

@@ -3,18 +3,17 @@
 
   action return { fret; }
 
-  action call_attributes { fcall attributes; }
+  action call_html_attributes { fcall html_attributes; }
+  
+  action call_ruby_attributes { fcall ruby_attributes; }
 
   indentation = (' '$indent_space | [\t]$indent_tab);
 
   newlines = ([\n]$newline (space* -- ([\n] | indentation)))+ ;
 
-  var = (alpha | "_")+;
-
-  str =
-    ("'" ([^'] | "\\'")* "'") | ('"' ([^"] | '\\"')* '"');
-
   name_chars = alnum | "_" ;
+
+  var = (alpha | "_") (name_chars)*;
 
   name = name_chars ((("-" | ":") name_chars) | name_chars)* ;
 
@@ -22,15 +21,25 @@
 
   attribute_var = var>new_attribute_var $attribute_var_name;
 
-  attribute_str = str>new_attribute_str $attribute_str_char;
+  str = ("'" ([^'] | "\\'")* "'") | ('"' ([^"] | '\\"')* '"');
+
+  attribute_str = str>new_attribute_str $attribute_str_char ;
 
   html_attribute =
-    attribute_name space* "=" space* (attribute_var | attribute_str);
+    attribute_name space* ("=" space* (attribute_var | attribute_str))? ;
 
-  html_attributes =
-    html_attribute (space+ html_attribute)*;
+  html_attributes :=
+    space*
+    html_attribute (space html_attribute)* :>> ")"@return;
 
-  attributes := html_attributes ")"@return;
+  ruby_attributes := 
+    space*
+    var>new_attribute $attribute_name
+    ( ":" | (space* "=>") )
+    space*
+    (attribute_var | attribute_str) ;
+
+  attributes = ( "(" @call_html_attributes ) | ( "{" @call_ruby_attributes );
 
   tag_name = name$tag_name ;
 
@@ -44,9 +53,7 @@
     "%">new_tag tag_name
     (("#">start_id tag_id) | (".">start_class tag_class))*
     ("/"$auto_close)?
-    (
-      "("@call_attributes
-    )?
+    attributes?
 
     tag_inline_text?
     ;
@@ -58,7 +65,7 @@
 
   class_div = ".">new_div tag_class;
 
-  div = (id_div | class_div) tag_inline_text? ;
+  div = (id_div | class_div) attributes?  tag_inline_text?   ;
 
   text = (any - (indentation | "#" | "." | "%" | "!"))$text_name >new_text (any$text_name)*;
 

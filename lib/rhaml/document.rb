@@ -126,5 +126,27 @@ module RHaml
 
       @stack.last.inline_text << char
     end
+
+    def new_attribute
+      @stack.last.attributes << Attribute.new
+    end
+
+    def attribute_name(char)
+      @stack.last.attributes.last.name << char
+    end
+
+    def new_attribute_var
+    end
+
+    def attribute_var_name(char)
+      @stack.last.attributes.last.value << char
+    end
+
+    def new_attribute_str
+    end
+
+    def attribute_str_char(char)
+      @stack.last.attributes.last.value << char
+    end
   end
 end

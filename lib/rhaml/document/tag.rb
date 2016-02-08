@@ -1,7 +1,12 @@
 module RHaml
   class Document
     class Tag
-      attr_reader :name, :elements, :id, :klass, :inline_text
+      attr_reader :name,
+                  :elements,
+                  :attributes,
+                  :id,
+                  :klass,
+                  :inline_text
 
       def initialize(name = "")
         @name = name
@@ -43,15 +48,16 @@ module RHaml
       end
 
       def compile_attributes
+        inline_attributes = []
         if !@klass.empty?
-          @attributes << Attribute.new("class", @klass)
+          inline_attributes << Attribute.new("class", "'#{@klass}'")
         end
 
         if !@id.empty?
-          @attributes << Attribute.new("id", @id)
+          inline_attributes << Attribute.new("id", "'#{@id}'")
         end
 
-        @attributes.map(&:compile)
+        (inline_attributes + @attributes).map(&:compile)
       end
 
       def auto_close
