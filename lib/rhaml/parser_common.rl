@@ -34,10 +34,11 @@
 
   ruby_attributes := 
     space*
-    var>new_attribute $attribute_name
-    ( ":" | (space* "=>") )
+    ( var>new_attribute $attribute_name ":" ) | 
+    ( ":" var>new_attribute $attribute_name (space* "=>") )
     space*
-    (attribute_var | attribute_str) ;
+    (attribute_var | attribute_str)
+    space*;
 
   attributes = ( "(" @call_html_attributes ) | ( "{" @call_ruby_attributes );
 

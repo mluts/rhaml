@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RHamlTest < Minitest::Test
   contexts = JSON.parse(File.read(File.dirname(__FILE__) + "/tests.json"))
-  contexts.first(7).each do |context|
+  contexts.to_a[7].tap do |context|
     context[1].each do |name, test|
       define_method("test_spec: #{name} (#{context[0]})") do
         html             = test["html"]
