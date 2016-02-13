@@ -1,4 +1,3 @@
-require 'rhaml/parser'
 require 'rhaml/html/pretty'
 require 'rhaml/html/dispatcher_ext'
 
