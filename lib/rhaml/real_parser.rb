@@ -102,15 +102,19 @@ module RHaml
     end
 
     def on_start_text(input, p)
+      @output << [:text, p]
     end
 
     def on_finish_text(input, p)
+      @output.last[1] = input[@output.last[1]..p]
     end
 
     def on_tab_indent(input, p)
+      @output << [:tab]
     end
 
     def on_space_indent(input, p)
+      @output << [:space]
     end
   end
 end

@@ -18,7 +18,9 @@ class RealParserTest < Minitest::Test
                       [:id, 'e'],
                       [:attr, 'a', 'a'],
                       [:attr, 'b', 'b'],
-                      [:attr, 'c', 'c']]]
+                      [:attr, 'c', 'c']]],
+    "%a.b#c{ a: e } the inline text" => [[:tag, 'a', [:class, 'b'], [:id, 'c'], [:attr, 'a', 'e'], 'the inline text']],
+    "%a\n  some text" => [[:tag, 'a'], [:space], [:space]]
   }.each do |code, expectation|
     define_method("test_spec: #{code.inspect} -> #{expectation.inspect}") do
       assert_equal(expectation, @parser.call(code))
