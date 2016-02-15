@@ -6,6 +6,7 @@ module RHaml
 
     def call(input)
       @output = []
+      @stack = [@output]
       parse(input)
       @output
     end
@@ -95,10 +96,14 @@ module RHaml
       element[last] = input[element[last]..p]
     end
 
-    def on_start_class_id(input, p)
+    def on_start_id_div(input, p)
+      @output << [:id_div, p]
     end
 
-    def on_finish_class_id(input, p)
+    def on_finish_id_div(input, p)
+      element = @output.last
+      last = element.length-1
+      element[last] = input[element[last]..p]
     end
 
     def on_start_text(input, p)
@@ -115,6 +120,9 @@ module RHaml
 
     def on_space_indent(input, p)
       @output << [:space]
+    end
+
+    def on_newline(*)
     end
   end
 end
