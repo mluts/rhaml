@@ -12,6 +12,7 @@ class RHaml::Parser::Stack
   end
 
   def push(element)
+    @stack.last << element
     @stack << element
   end
 
