@@ -142,13 +142,39 @@ class RHaml::Parser::Document < ::MicroMachine
   end
 
   def mark_id_div(p)
-    trigger!(__method__.to_sym)
-    @id_div = [:id_div, p]
+    mark_element(:id_div, p)
   end
 
   def write_id_div(p)
-    trigger!(__method__.to_sym)
-    @id_div[1] = @data[@id_div[1]..p]
+    write_element(p)
+    @element.replace([:tag, 'div', [:attr, 'id', @element[1]]])
+  end
+
+  def mark_class_div(p)
+    mark_element(:class_div, p)
+  end
+
+  def write_class_div(p)
+    write_element(p)
+    @element.replace([:tag, 'div', [:attr, 'class', @element[1]]])
+  end
+
+  def mark_class(p)
+    @attr = [:attr, 'class', p]
+  end
+
+  def write_class(p)
+    @attr[2] = @data[@attr[2]..p]
+    @element << @attr
+  end
+
+  def mark_id(p)
+    @attr = [:attr, 'id', p]
+  end
+
+  def write_id(p)
+    @attr[2] = @data[@attr[2]..p]
+    @element << @attr
   end
 
   def indent(char)

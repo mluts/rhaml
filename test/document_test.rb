@@ -78,4 +78,35 @@ class DocumentTest < Minitest::Test
     @doc.write_inline_text(4)
     assert_equal [[:div, 'hello', 'hello']], @doc.compile
   end
+
+  def test_id_class_div
+    @doc.mark_id_div(0)
+    @doc.write_id_div(4)
+    @doc.terminate
+    indentation.step.times do
+      @doc.indent(indentation.char)
+    end
+
+    @doc.mark_class_div(0)
+    @doc.write_class_div(4)
+    assert_equal [[:tag,
+                   'div',
+                   [:attr, 'id', 'hello'],
+                   [:tag, 'div',
+                    [:attr, 'class', 'hello']]]], @doc.compile
+  end
+
+  def test_id_class
+    @doc.mark_element(:tag, 0)
+    @doc.write_element(4)
+    @doc.mark_class(0)
+    @doc.write_class(0)
+
+    @doc.mark_id(1)
+    @doc.write_id(1)
+
+    assert_equal [[:tag, 'hello',
+                   [:attr, 'class', 'h'],
+                   [:attr, 'id', 'e']]], @doc.compile
+  end
 end
