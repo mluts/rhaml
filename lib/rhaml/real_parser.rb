@@ -1,3 +1,7 @@
+require 'rhaml/parser/stack'
+require 'rhaml/parser/indentation'
+require 'rhaml/parser/document'
+
 module RHaml
   class RealParser < RHaml::Parser
     def initialize
@@ -115,7 +119,6 @@ module RHaml
     end
 
     def on_tab_indent(input, p)
-      @output << [:tab]
     end
 
     def on_space_indent(input, p)
