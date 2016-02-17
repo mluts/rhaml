@@ -5,7 +5,7 @@ require 'rhaml/parser/filter'
 
 module RHaml
   class RealParser < RHaml::Parser
-    def initialize
+    def initialize(opts = {})
       super(self)
     end
 
@@ -13,7 +13,7 @@ module RHaml
       @doc = RHaml::Parser::Document.new(input.dup,
                                               RHaml::Parser::Indentation.new(' ', 2))
       parse(input)
-      @doc.compile
+      [:multi, *@doc.compile]
     end
 
     def on_new_header(*)

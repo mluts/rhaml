@@ -22,10 +22,10 @@ class FilterTest < Minitest::Test
 
   def test_tag_with_attributes
     assert_equal [:html, :tag, 'div', [:html, :attrs,
-                                       [:html, :attr, 'id', '1'],
-                                       [:html, :attr, 'class', '2']], [:multi]],
-    @filter.call([:tag, 'div', [:attr, 'id', '1'],
-                  [:attr, 'class', '2']])
+                                       [:html, :attr, 'id', [:static, '1']],
+                                       [:html, :attr, 'class', [:static, '2']]], [:multi]],
+    @filter.call([:tag, 'div', [:attr, 'id', [:static, '1']],
+                  [:attr, 'class', [:static, '2']]])
   end
 
   def test_tag_with_children

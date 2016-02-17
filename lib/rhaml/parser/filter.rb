@@ -39,7 +39,7 @@ class RHaml::Parser::Filter < Temple::Filter
   end
 
   def on_attr(name, value = '')
-    [:html, :attr, name, value]
+    [:html, :attr, name, [:static, value]]
   end
 
   def on_inline(text)

@@ -5,11 +5,12 @@ module RHaml
   ParseError = Class.new(StandardError)
 
   class Renderer < ::Temple::Engine
-    use RHaml::Parser
+    use RHaml::RealParser
 
+    use RHaml::Parser::Filter
     html :AttributeMerger
     html :AttributeSorter
-    use RHaml::HTML::Pretty
+    html :Fast
 
     filter :MultiFlattener
     filter :StaticMerger
