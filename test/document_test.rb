@@ -76,7 +76,7 @@ class DocumentTest < Minitest::Test
     @doc.write_element(4)
     @doc.mark_inline_text(0)
     @doc.write_inline_text(4)
-    assert_equal [[:div, 'hello', 'hello']], @doc.compile
+    assert_equal [[:div, 'hello', [:inline_text, 'hello']]], @doc.compile
   end
 
   def test_id_class_div
@@ -119,6 +119,6 @@ class DocumentTest < Minitest::Test
     @doc.write_header
     @doc.mark_inline_text(0)
     @doc.write_inline_text(4)
-    assert_equal [[:header, 'hello']], @doc.compile
+    assert_equal [[:header, [:inline_text, 'hello']]], @doc.compile
   end
 end

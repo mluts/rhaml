@@ -1,6 +1,7 @@
 require 'rhaml/parser/stack'
 require 'rhaml/parser/indentation'
 require 'rhaml/parser/document'
+require 'rhaml/parser/filter'
 
 module RHaml
   class RealParser < RHaml::Parser
