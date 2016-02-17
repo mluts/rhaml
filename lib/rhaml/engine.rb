@@ -5,7 +5,6 @@ module RHaml
     def initialize(template, options = {})
       @template = template
       @options = default_options.merge(options)
-      @renderer = RHaml::Renderer.new(@options)
     end
 
     def default_options
@@ -23,7 +22,7 @@ module RHaml
     def render(object = Object.new, locals = {})
       scope = object.instance_eval{binding}
       set_locals(locals, scope, object)
-      eval(@renderer.call(@template), scope)
+      eval(RHaml::Renderer.new(@options).call(@template), scope)
     end
 
     def set_locals(locals, scope, scope_object)

@@ -38,4 +38,14 @@ class FilterTest < Minitest::Test
     assert_equal [:html, :tag, 'div', [:multi]],
       @filter.call([:tag, 'div', [:autoclose]])
   end
+
+  def test_text
+    assert_equal [:static, 'abc'],
+      @filter.call([:text, 'abc'])
+  end
+
+  def text_in_tag
+    assert_equal [:html, :tag, 'abc', [:multi], [:multi, [:static, 'abc']]],
+      @filter.call([:tag, 'abc', [:text, 'abc']])
+  end
 end

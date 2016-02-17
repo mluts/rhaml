@@ -43,10 +43,21 @@ class RHaml::Parser::Filter < Temple::Filter
   end
 
   def on_attr(name, value = '')
-    [:html, :attr, name, [:static, value]]
+    name.slice!(1..-2) if %w('").include?(name[0])
+    value =
+      case value[0]
+      when '"' then [:dynamic, value]
+      when "'" then [:static, value.slice(1..-2)]
+      else [:static, value]
+      end
+    [:html, :attr, name, value]
   end
 
   def on_inline(text)
+    [:static, text]
+  end
+
+  def on_text(text)
     [:static, text]
   end
 end

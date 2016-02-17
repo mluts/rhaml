@@ -92,7 +92,8 @@ class RHaml::Parser::Document < ::MicroMachine
         :in_element => :pending,
         :writing_attr => :pending,
         :in_header => :pending,
-        :autoclosed => :pending
+        :autoclosed => :pending,
+        :pending => :pending
       },
 
       autoclose: {
