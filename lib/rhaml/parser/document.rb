@@ -96,7 +96,8 @@ class RHaml::Parser::Document < ::MicroMachine
 
   def write_header
     trigger!(__method__.to_sym)
-    push([:header])
+    @element = [:header]
+    push(@element)
   end
 
   def mark_element(element_name, p)

@@ -109,4 +109,16 @@ class DocumentTest < Minitest::Test
                    [:attr, 'class', 'h'],
                    [:attr, 'id', 'e']]], @doc.compile
   end
+
+  def test_header
+    @doc.write_header
+    assert_equal [[:header]], @doc.compile
+  end
+
+  def test_header_with_type
+    @doc.write_header
+    @doc.mark_inline_text(0)
+    @doc.write_inline_text(4)
+    assert_equal [[:header, 'hello']], @doc.compile
+  end
 end
