@@ -31,10 +31,15 @@ class RealParserTest < Minitest::Test
                                   [:tag, 'div',
                                    [:attr, 'class', 'b']],
                                   [:tag, 'div', [:attr, 'class', 'c'],
-                                   [:tag, 'div', [:attr, 'class', 'd']]]]]
+                                   [:tag, 'div', [:attr, 'class', 'd']]]]],
+
+    '%meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/' =>
+    [[:tag, 'meta',
+      [:attr, 'content', '"text/html; charset=UTF-8"'],
+      [:attr, 'http-equiv', '"Content-Type"']]]
   }.each do |code, expectation|
     define_method("test_spec: #{code.inspect} -> #{expectation.inspect}") do
-      assert_equal(expectation, @parser.call(code))
+      assert_equal(expectation, @parser.call(code)[1..-1])
     end
   end
 end
