@@ -89,7 +89,8 @@ class RHaml::Parser::Document < ::MicroMachine
       terminate: {
         :in_attr => :pending,
         :in_element => :pending,
-        :writing_attr => :pending
+        :writing_attr => :pending,
+        :in_header => :pending
       }
     }.each { |event, transitions| self.when(event, transitions) }
   end
@@ -198,7 +199,7 @@ class RHaml::Parser::Document < ::MicroMachine
     trigger!(__method__.to_sym)
 
     if char != @indentation.char
-      raise "Wrong indentation char: #{char.inspect}, expected #{@indentation.char}"
+      raise "Wrong indentation char: #{char.inspect}, expected #{@indentation.char.inspect}"
     end
 
     @indentation.increment

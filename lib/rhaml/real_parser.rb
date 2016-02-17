@@ -10,122 +10,105 @@ module RHaml
 
     def call(input)
       @doc = RHaml::Parser::Document.new(input.dup,
-                                              RHaml::Parser::Indentation.new('  ', 2))
+                                              RHaml::Parser::Indentation.new(' ', 2))
       parse(input)
       @doc.compile
     end
 
-    def on_new_header(input, p)
-      @doc.mark_element(:header, p)
+    def on_new_header(*)
+      @doc.write_header
     end
 
     def on_start_tag(input, p)
-      @output << [:tag, p]
+      @doc.mark_element(:tag, p)
     end
 
     def on_finish_tag(input, p)
-      element = @output.last
-      last = element.length-1
-      element[last] = input[element[last]..p]
+      @doc.write_element(p)
     end
 
     def on_start_inline_text(input, p)
-      @output.last << p
+      @doc.mark_inline_text(p)
     end
 
     def on_finish_inline_text(input, p)
-      element = @output.last
-      last = element.length-1
-      element[last] = input[element[last]..p]
+      @doc.write_inline_text(p)
     end
 
     def on_start_attr_name(input, p)
-      @output.last << [:attr, p]
+      @doc.mark_attr_name(p)
     end
 
     def on_finish_attr_name(input, p)
-      attr = @output.last.last
-      last = attr.length-1
-      attr[last] = input[attr[last]..p]
+      @doc.write_attr_name(p)
     end
 
     def on_start_attr_val(input, p)
-      attr = @output.last.last
-      attr << p
+      @doc.mark_attr_val(p)
     end
 
     def on_finish_attr_val(input, p)
-      attr = @output.last.last
-      last = attr.length-1
-      attr[last] = input[attr[last]..p]
+      @doc.write_attr_val(p)
     end
 
     def on_start_filter(input, p)
-      @output << [:filter, p]
+      @doc.mark_element(:filter, p)
     end
 
     def on_finish_filter(input, p)
-      filter = @output.last
-      last = filter.length-1
-      filter[last] = input[filter[last]..p]
+      @doc.write_element(:filter, p)
     end
 
     def on_start_id(input, p)
-      @output.last << [:id, p]
+      @doc.mark_id(p)
     end
 
     def on_finish_id(input, p)
-      id = @output.last.last
-      last = id.length-1
-      id[last] = input[id[last]..p]
+      @doc.write_id(p)
     end
 
     def on_start_class(input, p)
-      @output.last << [:class, p]
+      @doc.mark_class(p)
     end
 
     def on_finish_class(input, p)
-      klass = @output.last.last
-      last = klass.length-1
-      klass[last] = input[klass[last]..p]
+      @doc.write_class(p)
     end
 
     def on_start_class_div(input, p)
-      @output << [:class_div, p]
+      @doc.mark_class_div(p)
     end
 
     def on_finish_class_div(input, p)
-      element = @output.last
-      last = element.length-1
-      element[last] = input[element[last]..p]
+      @doc.write_class_div(p)
     end
 
     def on_start_id_div(input, p)
-      @output << [:id_div, p]
+      @doc.mark_id_div(p)
     end
 
     def on_finish_id_div(input, p)
-      element = @output.last
-      last = element.length-1
-      element[last] = input[element[last]..p]
+      @doc.write_id_div(p)
     end
 
     def on_start_text(input, p)
-      @output << [:text, p]
+      @doc.mark_element(:text, p)
     end
 
     def on_finish_text(input, p)
-      @output.last[1] = input[@output.last[1]..p]
+      @doc.write_element(p)
     end
 
     def on_tab_indent(input, p)
+      @doc.indent("\t")
     end
 
     def on_space_indent(input, p)
-      @output << [:space]
+      @doc.indent(" ")
     end
 
     def on_newline(*)
+      @doc.terminate
     end
   end
 end
