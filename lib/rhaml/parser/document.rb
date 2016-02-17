@@ -70,7 +70,8 @@ class RHaml::Parser::Document < ::MicroMachine
       mark_inline_text: {
         :in_attr => :writing_inline_text,
         :in_element => :writing_inline_text,
-        :in_header => :writing_inline_text
+        :in_header => :writing_inline_text,
+        :autoclosed => :writing_inline_text
       },
 
       write_inline_text: {
@@ -90,7 +91,14 @@ class RHaml::Parser::Document < ::MicroMachine
         :in_attr => :pending,
         :in_element => :pending,
         :writing_attr => :pending,
-        :in_header => :pending
+        :in_header => :pending,
+        :autoclosed => :pending
+      },
+
+      autoclose: {
+        :in_attr => :autoclosed,
+        :writing_attr => :autoclosed,
+        :in_element => :autoclosed
       }
     }.each { |event, transitions| self.when(event, transitions) }
   end
@@ -203,6 +211,11 @@ class RHaml::Parser::Document < ::MicroMachine
     end
 
     @indentation.increment
+  end
+
+  def autoclose
+    trigger!(__method__.to_sym)
+    @element << [:autoclose]
   end
 
   def compile

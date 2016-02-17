@@ -36,7 +36,7 @@ class RealParserTest < Minitest::Test
     '%meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/' =>
     [[:tag, 'meta',
       [:attr, 'content', '"text/html; charset=UTF-8"'],
-      [:attr, 'http-equiv', '"Content-Type"']]]
+      [:attr, '"http-equiv"', '"Content-Type"'], [:autoclose]]]
   }.each do |code, expectation|
     define_method("test_spec: #{code.inspect} -> #{expectation.inspect}") do
       assert_equal(expectation, @parser.call(code)[1..-1])

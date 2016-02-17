@@ -121,4 +121,24 @@ class DocumentTest < Minitest::Test
     @doc.write_inline_text(4)
     assert_equal [[:header, [:inline, 'hello']]], @doc.compile
   end
+
+  def test_autoclose
+    @doc.mark_element(:tag, 0)
+    @doc.write_element(4)
+    @doc.autoclose
+
+    assert_equal [[:tag, 'hello', [:autoclose]]], @doc.compile
+  end
+
+  def test_autoclose_with_attributes
+    @doc.mark_element(:tag, 0)
+    @doc.write_element(4)
+    @doc.mark_attr_name(0)
+    @doc.write_attr_name(1)
+    @doc.mark_attr_val(0)
+    @doc.write_attr_val(1)
+    @doc.autoclose
+
+    assert_equal [[:tag, 'hello', [:attr, 'he', 'he'], [:autoclose]]], @doc.compile
+  end
 end

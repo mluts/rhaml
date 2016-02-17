@@ -111,5 +111,9 @@ module RHaml
     def on_newline(*)
       @doc.terminate
     end
+
+    def on_element_slash(*)
+      @doc.autoclose
+    end
   end
 end
