@@ -9,14 +9,14 @@ module RHaml
     end
 
     def call(input)
-      @output = []
-      @stack = [@output]
+      @doc = RHaml::Parser::Document.new(input.dup,
+                                              RHaml::Parser::Indentation.new('  ', 2))
       parse(input)
-      @output
+      @doc.compile
     end
 
     def on_new_header(input, p)
-      @output << [:header]
+      @doc.mark_element(:header, p)
     end
 
     def on_start_tag(input, p)

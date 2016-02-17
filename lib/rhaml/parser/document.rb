@@ -69,7 +69,8 @@ class RHaml::Parser::Document < ::MicroMachine
 
       mark_inline_text: {
         :in_attr => :writing_inline_text,
-        :in_element => :writing_inline_text
+        :in_element => :writing_inline_text,
+        :in_header => :writing_inline_text
       },
 
       write_inline_text: {
@@ -80,12 +81,22 @@ class RHaml::Parser::Document < ::MicroMachine
         :pending => :pending
       },
 
+      write_header: {
+        :start => :in_header,
+        :pending => :in_header
+      },
+
       terminate: {
         :in_attr => :pending,
         :in_element => :pending,
         :writing_attr => :pending
       }
     }.each { |event, transitions| self.when(event, transitions) }
+  end
+
+  def write_header
+    trigger!(__method__.to_sym)
+    push([:header])
   end
 
   def mark_element(element_name, p)
@@ -96,12 +107,7 @@ class RHaml::Parser::Document < ::MicroMachine
   def write_element(p)
     trigger!(__method__.to_sym)
     @element[1] = @data[@element[1]..p]
-    if @indentation.index.nil?
-      raise "Wrong indentation: #{@indentation.count}, expected: #{(@indentation.count / @indentation.step.to_f).ceil}"
-    else
-      @stack.slice(@indentation.index + 1)
-    end
-    @stack.push(@element)
+    push(@element)
   end
 
   def mark_attr_name(p)
@@ -142,37 +148,47 @@ class RHaml::Parser::Document < ::MicroMachine
   end
 
   def mark_id_div(p)
-    mark_element(:id_div, p)
+    trigger!(__method__.to_sym)
+    @attr = [:attr, 'id', p]
+    @element = [:tag, 'div', @attr]
   end
 
   def write_id_div(p)
-    write_element(p)
-    @element.replace([:tag, 'div', [:attr, 'id', @element[1]]])
+    trigger!(__method__.to_sym)
+    @attr[2] = @data[@attr[2]..p]
+    push(@element)
   end
 
   def mark_class_div(p)
-    mark_element(:class_div, p)
+    trigger!(__method__.to_sym)
+    @attr = [:attr, 'class', p]
+    @element = [:tag, 'div', @attr]
   end
 
   def write_class_div(p)
-    write_element(p)
-    @element.replace([:tag, 'div', [:attr, 'class', @element[1]]])
+    trigger!(__method__.to_sym)
+    @attr[2] = @data[@attr[2]..p]
+    push(@element)
   end
 
   def mark_class(p)
+    trigger!(__method__.to_sym)
     @attr = [:attr, 'class', p]
   end
 
   def write_class(p)
+    trigger!(__method__.to_sym)
     @attr[2] = @data[@attr[2]..p]
     @element << @attr
   end
 
   def mark_id(p)
+    trigger!(__method__.to_sym)
     @attr = [:attr, 'id', p]
   end
 
   def write_id(p)
+    trigger!(__method__.to_sym)
     @attr[2] = @data[@attr[2]..p]
     @element << @attr
   end
@@ -189,5 +205,20 @@ class RHaml::Parser::Document < ::MicroMachine
 
   def compile
     @stack.bottom.dup
+  end
+
+  private
+
+  def push(element)
+    if @indentation.index.nil?
+      raise "Wrong indentation: #{@indentation.count}, expected: #{(@indentation.count / @indentation.step.to_f).ceil}"
+    else
+      @stack.slice(@indentation.index + 1)
+    end
+    @stack.push(element)
+  end
+
+  def append_to_element(element)
+    @stack.top << element
   end
 end
