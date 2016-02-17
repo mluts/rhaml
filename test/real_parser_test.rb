@@ -7,8 +7,8 @@ class RealParserTest < Minitest::Test
 
   {
     "!!!" => [[:header]],
-    "!!! XML" => [[:header, [:inline_text, 'XML']]],
-    "!!! XML  " => [[:header, [:inline_text, 'XML  ']]],
+    "!!! XML" => [[:header, [:inline, 'XML']]],
+    "!!! XML  " => [[:header, [:inline, 'XML  ']]],
     "!!!\n%a" => [[:header], [:tag, 'a']],
     "%a( attr=b )" => [[:tag, 'a', [:attr, 'attr', 'b']]],
     "%a.b.c#d#e{ a: a, :b => b, :c => c }" => [[:tag, 'a',
@@ -22,7 +22,7 @@ class RealParserTest < Minitest::Test
     "%a.b#c{ a: e } the inline text" => [[:tag, 'a',
                                           [:attr, 'class', 'b'],
                                           [:attr, 'id', 'c'],
-                                          [:attr, 'a', 'e'], [:inline_text, 'the inline text']]],
+                                          [:attr, 'a', 'e'], [:inline, 'the inline text']]],
     "%a\n  some text" => [[:tag, 'a', [:text, 'some text']]],
     ".a#b" => [[:tag, 'div', [:attr, 'class', 'a'], [:attr, 'id', 'b']]],
     ".a\n  .b" => [[:tag, 'div', [:attr, 'class', 'a'], [:tag, 'div', [:attr, 'class', 'b']]]],

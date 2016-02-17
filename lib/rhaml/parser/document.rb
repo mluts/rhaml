@@ -141,7 +141,7 @@ class RHaml::Parser::Document < ::MicroMachine
   def write_inline_text(p)
     trigger!(__method__.to_sym)
     @inline_text = @data[@inline_text..p]
-    @element << [:inline_text, @inline_text]
+    @element << [:inline, @inline_text]
   end
 
   def terminate
