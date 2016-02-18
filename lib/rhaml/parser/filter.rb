@@ -1,8 +1,10 @@
 class RHaml::Parser::Filter < Temple::Filter
   attr_reader :default_doctype
 
+  define_options :format => :html
+
   def initialize(opts = {})
-    @options = opts.dup
+    @options = opts
     super
     @default_doctype = @options[:default_doctype] || 'html'
   end
@@ -45,10 +47,18 @@ class RHaml::Parser::Filter < Temple::Filter
   def on_attr(name, value = '')
     name.slice!(1..-2) if %w('").include?(name[0])
     value =
-      case value[0]
-      when '"' then [:dynamic, value]
-      when "'" then [:static, value.slice(1..-2)]
-      else [:static, value]
+      if value[0] == "'"
+        [:static, value.slice(1..-2)]
+      elsif value[0] == '"'
+        [:dynamic, value]
+      elsif value == 'true'
+        if @options[:format] == :html
+          [:multi]
+        else
+          [:static, name]
+        end
+      else
+        [:dynamic, name]
       end
     [:html, :attr, name, value]
   end

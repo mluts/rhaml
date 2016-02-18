@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/mluts/rhaml-parser.git
-  revision: 68fa1571d6ca6443f0b4f40e0dc7069092bfbea2
+  revision: 57b9ca64fa982890b6f77ac8277c39f4f58262b2
   specs:
-    rhaml-parser (0.1.0)
+    rhaml-parser (0.1.1)
 
 GEM
   remote: https://rubygems.org/
