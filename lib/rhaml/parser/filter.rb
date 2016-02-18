@@ -47,18 +47,14 @@ class RHaml::Parser::Filter < Temple::Filter
   def on_attr(name, value = '')
     name.slice!(1..-2) if %w('").include?(name[0])
     value =
-      if value[0] == "'"
-        [:static, value.slice(1..-2)]
-      elsif value[0] == '"'
-        [:dynamic, value]
-      elsif value == 'true'
+      if value == 'true'
         if @options[:format] == :html
           [:multi]
         else
           [:static, name]
         end
       else
-        [:dynamic, name]
+        [:dynamic, value]
       end
     [:html, :attr, name, value]
   end

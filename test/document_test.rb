@@ -91,9 +91,9 @@ class DocumentTest < Minitest::Test
     @doc.write_class_div(4)
     assert_equal [[:tag,
                    'div',
-                   [:attr, 'id', 'hello'],
+                   [:attr, 'id', "'hello'"],
                    [:tag, 'div',
-                    [:attr, 'class', 'hello']]]], @doc.compile
+                    [:attr, 'class', "'hello'"]]]], @doc.compile
   end
 
   def test_id_class
@@ -106,8 +106,8 @@ class DocumentTest < Minitest::Test
     @doc.write_id(1)
 
     assert_equal [[:tag, 'hello',
-                   [:attr, 'class', 'h'],
-                   [:attr, 'id', 'e']]], @doc.compile
+                   [:attr, 'class', "'h'"],
+                   [:attr, 'id', "'e'"]]], @doc.compile
   end
 
   def test_header
