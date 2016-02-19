@@ -4,6 +4,7 @@ class RHamlTest < Minitest::Test
   contexts = JSON.parse(File.read(File.dirname(__FILE__) + "/tests.json"))
   contexts.each do |context|
     context[1].each do |name, test|
+      next if test['optional']
       define_method("test_spec: #{name} (#{context[0]})") do
         html             = test["html"]
         haml             = test["haml"]

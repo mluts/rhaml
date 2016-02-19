@@ -57,7 +57,7 @@ module RHaml
     end
 
     def on_finish_filter(input, p)
-      @doc.write_element(:filter, p)
+      @doc.write_element(p)
     end
 
     def on_start_id(input, p)

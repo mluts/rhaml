@@ -55,7 +55,7 @@ class RHaml::Parser::Filter < Temple::Filter
     tag
   end
 
-  def on_attr(name, value = '')
+  def on_attr(name, value = '', literal = nil)
     name.slice!(1..-2) if %w('").include?(name[0])
     value =
       if value == 'true'
@@ -64,8 +64,10 @@ class RHaml::Parser::Filter < Temple::Filter
         else
           [:static, name]
         end
+      elsif value == ''
+        [:multi]
       else
-        [:dynamic, value]
+        [literal ? :static : :dynamic, value]
       end
     [:html, :attr, name, value]
   end
@@ -75,6 +77,6 @@ class RHaml::Parser::Filter < Temple::Filter
   end
 
   def on_text(text)
-    [:static, text]
+    [:dynamic, '"%s"' % text.gsub('"', '\\\\1')]
   end
 end
