@@ -71,7 +71,8 @@ class RHaml::Parser::Document < ::MicroMachine
         :in_attr => :writing_inline_text,
         :in_element => :writing_inline_text,
         :in_header => :writing_inline_text,
-        :autoclosed => :writing_inline_text
+        :autoclosed => :writing_inline_text,
+        :in_comment => :writing_inline_text
       },
 
       write_inline_text: {
@@ -93,13 +94,19 @@ class RHaml::Parser::Document < ::MicroMachine
         :writing_attr => :pending,
         :in_header => :pending,
         :autoclosed => :pending,
-        :pending => :pending
+        :pending => :pending,
+        :in_comment => :pending
       },
 
       autoclose: {
         :in_attr => :autoclosed,
         :writing_attr => :autoclosed,
         :in_element => :autoclosed
+      },
+
+      comment: {
+        :pending => :in_comment,
+        :start => :in_comment
       }
     }.each { |event, transitions| self.when(event, transitions) }
   end
@@ -107,6 +114,12 @@ class RHaml::Parser::Document < ::MicroMachine
   def write_header
     trigger!(__method__.to_sym)
     @element = [:header]
+    push(@element)
+  end
+
+  def comment
+    trigger!(__method__.to_sym)
+    @element = [:comment]
     push(@element)
   end
 

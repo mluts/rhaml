@@ -100,11 +100,11 @@ module RHaml
       @doc.write_element(p)
     end
 
-    def on_tab_indent(input, p)
+    def on_tab_indent(*)
       @doc.indent("\t")
     end
 
-    def on_space_indent(input, p)
+    def on_space_indent(*)
       @doc.indent(" ")
     end
 
@@ -114,6 +114,10 @@ module RHaml
 
     def on_element_slash(*)
       @doc.autoclose
+    end
+
+    def on_comment(*)
+      @doc.comment
     end
   end
 end
