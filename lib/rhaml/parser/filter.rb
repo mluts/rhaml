@@ -30,15 +30,26 @@ class RHaml::Parser::Filter < Temple::Filter
     children = [:multi]
     tag = [:html, :tag, name, attrs, children]
     autoclose = false
+
+
+    id_attrs = []
+
     elements.each do |element|
       if element[0] == :autoclose
         autoclose = true
       elsif element[0] == :attr
-        attrs << compile(element)
+        if element[1] == 'id'
+          id_attrs << compile(element)
+        else
+          attrs << compile(element)
+        end
       else
         children << compile(element)
       end
     end
+
+    attrs.push(id_attrs.last) if id_attrs.any?
+
     attrs.replace([:multi]) if attrs[2].nil?
     tag.pop if autoclose
     tag
