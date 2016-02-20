@@ -77,7 +77,7 @@ class RHaml::Parser::Filter < Temple::Filter
   end
 
   def on_text(text)
-    [:dynamic, '"%s"' % text.gsub('"', '\\\\1')]
+    [:dynamic, '"%s"' % text.gsub('"') { |m| "\\#{m}" }]
   end
 
   def on_comment(*nested)
@@ -86,7 +86,7 @@ class RHaml::Parser::Filter < Temple::Filter
     if nested[0] && nested[0][0] == :inline
       children.push([:static, ' '],
                     compile(nested.shift),
-                    [:static, '  '])
+                    [:static, ' '])
     end
 
     children.push(*nested.map(&method(:compile)))

@@ -10,7 +10,7 @@ module RHaml
     use RHaml::Parser::Filter
     html :AttributeMerger
     html :AttributeSorter
-    html :Pretty
+    use RHaml::HTML::Pretty
 
     filter :MultiFlattener
     filter :StaticMerger

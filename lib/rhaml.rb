@@ -1,5 +1,6 @@
 require 'temple'
 require 'micromachine'
+require 'rhaml/html/pretty'
 require 'rhaml/parser'
 require 'rhaml/real_parser'
 

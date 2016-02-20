@@ -4,8 +4,6 @@ module RHaml
   class Engine
     def initialize(template, options = {})
       @template = template
-      options[:format] = :xml if options[:format] == :xhtml
-      options[:format] = :html if options[:format] == :html5
       @options = default_options.merge(options)
     end
 
