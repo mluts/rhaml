@@ -40,8 +40,13 @@ class FilterTest < Minitest::Test
   end
 
   def test_text
-    assert_equal [:static, 'abc'],
+    assert_equal [:dynamic, '"abc"'],
       @filter.call([:text, 'abc'])
+  end
+
+  def test_text_escaping
+    assert_equal [:dynamic, '"abc\\"abc"'],
+      @filter.call([:text, 'abc"abc'])
   end
 
   def text_in_tag
