@@ -28,9 +28,8 @@ class RHaml::Parser::Filter < Temple::Filter
   def on_tag(name, *elements)
     attrs = [:html, :attrs]
     children = [:multi]
-    tag = [:html, :tag, name, attrs, children]
     autoclose = false
-
+    inline = false
 
     id_attrs = []
 
@@ -43,6 +42,9 @@ class RHaml::Parser::Filter < Temple::Filter
         else
           attrs << compile(element)
         end
+      elsif element[0] == :inline
+        inline = true
+        children << compile(element)
       else
         children << compile(element)
       end
@@ -51,7 +53,16 @@ class RHaml::Parser::Filter < Temple::Filter
     attrs.push(id_attrs.last) if id_attrs.any?
 
     attrs.replace([:multi]) if attrs[2].nil?
+
+    tag =
+      if inline
+        [ :html, :tag, :inline, name, attrs, children ]
+      else
+        [ :html, :tag, name, attrs, children ]
+      end
+
     tag.pop if autoclose
+
     tag
   end
 
