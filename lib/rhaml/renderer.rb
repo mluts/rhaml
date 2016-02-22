@@ -8,8 +8,9 @@ module RHaml
     use RHaml::RealParser
 
     use RHaml::Parser::Filter
+    use RHaml::HTML::IdsMerger
+    use RHaml::HTML::AttributeSorter
     html :AttributeMerger
-    html :AttributeSorter
     use RHaml::HTML::Pretty
 
     filter :MultiFlattener

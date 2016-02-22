@@ -180,7 +180,7 @@ class RHaml::Parser::Document < ::MicroMachine
   def write_id_div(p)
     trigger!(__method__.to_sym)
     @attr[2] = @data[@attr[2]..p]
-    @attr << :literal
+    @attr << :css
     push(@element)
   end
 
@@ -193,7 +193,7 @@ class RHaml::Parser::Document < ::MicroMachine
   def write_class_div(p)
     trigger!(__method__.to_sym)
     @attr[2] = @data[@attr[2]..p]
-    @attr << :literal
+    @attr << :css
     push(@element)
   end
 
@@ -205,7 +205,7 @@ class RHaml::Parser::Document < ::MicroMachine
   def write_class(p)
     trigger!(__method__.to_sym)
     @attr[2] = @data[@attr[2]..p]
-    @attr << :literal
+    @attr << :css
     @element << @attr
   end
 
@@ -217,7 +217,7 @@ class RHaml::Parser::Document < ::MicroMachine
   def write_id(p)
     trigger!(__method__.to_sym)
     @attr[2] = @data[@attr[2]..p]
-    @attr << :literal
+    @attr << :css
     @element << @attr
   end
 

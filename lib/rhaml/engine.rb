@@ -22,7 +22,7 @@ module RHaml
     def render(object = Object.new, locals = {})
       scope = object.instance_eval{binding}
       set_locals(locals, scope, object)
-      eval(RHaml::Renderer.new(@options).call(@template), scope)
+      eval(RHaml::Renderer.new(@options.merge(scope: scope)).call(@template), scope)
     end
 
     def set_locals(locals, scope, scope_object)

@@ -1,12 +1,13 @@
 class RHaml::Parser::Filter < Temple::Filter
   attr_reader :default_doctype
 
-  define_options :format => :html
+  define_options :format => :html,
+                 :scope => Object.new.instance_eval{binding}
 
   def initialize(opts = {})
-    @options = opts
     super
-    @default_doctype = @options[:default_doctype] || 'html'
+    @scope = options[:scope]
+    @default_doctype = options[:default_doctype] || 'html'
   end
 
   def on_header(doctype = default_doctype)
@@ -26,23 +27,29 @@ class RHaml::Parser::Filter < Temple::Filter
   end
 
   def on_tag(name, *elements)
-    attrs = [:html, :attrs]
+    attrs = []
     children = [:multi]
     autoclose = false
     inline = false
 
-    id_attrs = []
+    css_id_attrs = []
+    css_attrs = []
 
     elements.each do |element|
-      if element[0] == :autoclose
+      case element[0]
+      when :autoclose
         autoclose = true
-      elsif element[0] == :attr
-        if element[1] == 'id'
-          id_attrs << compile(element)
+      when :attr
+        if element.last == :css
+          if element[1] == 'id'
+            css_id_attrs << compile(element)
+          else
+            css_attrs << compile(element)
+          end
         else
           attrs << compile(element)
         end
-      elsif element[0] == :inline
+      when :inline
         inline = true
         children << compile(element)
       else
@@ -50,15 +57,14 @@ class RHaml::Parser::Filter < Temple::Filter
       end
     end
 
-    attrs.push(id_attrs.last) if id_attrs.any?
-
-    attrs.replace([:multi]) if attrs[2].nil?
+    attrs.unshift(*css_attrs)
+    attrs.unshift(css_id_attrs.last) if css_id_attrs.any?
 
     tag =
       if inline
-        [ :html, :tag, :inline, name, attrs, children ]
+        [ :html, :tag, :inline, name, attrs.any? ? [:html, :attrs, *attrs] : [:multi], children ]
       else
-        [ :html, :tag, name, attrs, children ]
+        [ :html, :tag, name, attrs.any? ? [:html, :attrs, *attrs] : [:multi], children ]
       end
 
     tag.pop if autoclose
@@ -66,11 +72,11 @@ class RHaml::Parser::Filter < Temple::Filter
     tag
   end
 
-  def on_attr(name, value = '', literal = nil)
+  def on_attr(name, value = '', css = nil)
     name.slice!(1..-2) if %w('").include?(name[0])
     value =
       if value == 'true'
-        if @options[:format] == :html
+        if options[:format] == :html
           [:multi]
         else
           [:static, name]
@@ -78,7 +84,11 @@ class RHaml::Parser::Filter < Temple::Filter
       elsif value == ''
         [:multi]
       else
-        [literal ? :static : :dynamic, value]
+        if css
+          [:static, value]
+        else
+          [:static, @scope.eval(value)]
+        end
       end
     [:html, :attr, name, value]
   end

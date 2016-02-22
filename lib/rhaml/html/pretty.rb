@@ -20,7 +20,6 @@ module RHaml
       def on_html_doctype(type)
         type = type.to_s.downcase
 
-        puts "%s %s" % [@format.inspect, type.inspect]
         if type =~ /^xml(\s+(.+))?$/
           if @format == :html
             str = ''
